@@ -15,70 +15,127 @@ library(shinythemes) # Return the URL for a Shiny theme
 library(devtools) # Collection of package development tools.
 library(shinyjs) #Easily improve the user experience of your Shiny apps in seconds
 library(shinyWidgets) # Custom inputs widgets for Shiny.
-library(rsconnect) # Deployment Interface for R Markdown Documents and Shiny Applications
 library(shiny) # Some advanced functionality depends on the shiny package being loaded server-side
 library(shinyjs)
 library(data.table)
 
 source(file = "00_scripts/git_functions.R")
-source(file = "00_scripts/info_card.R")
-#source(file = "00_scripts/panel_card.R")
-source(file = "00_scripts/generate_favorite_cards.R")
-#source(file = "00_scripts/crud_operations_mongodb.R")
 
-current_user_favorites <- c("tidyverse", "r4ds", "r-shiny")
+#trending_repos <- trending_repos_on_github(language = "python", since = "weekly",gtoken = gtoken)
+#trending_repos <- tibble::rowid_to_column(trending_repos, "id")
 
 
-# FUNCTIONS ---- 
+# FUNCTIONS ----
 
-github_app_auth()
-
-#trending_repos <- trending_repos_on_github(language = "python", since = "daily", gtoken = gtoken)
-
-#trending_repos
-
-#trending_dev <- trending_developers_on_github(language = "python", since = "daily", gtoken = gtoken)
-
-#trending_dev
+# FUNCTIONS ----
+navbar_page_with_inputs <- function(...) {
+    navbar <- shiny::navbarPage(...)
+    return(navbar)
+}
 
 
-# UI ----
+make_cards <- function(data) {
+    data %>%
+        mutate(id = as_factor(id)) %>%
+        group_by(id) %>%
+        group_split() %>%
+        
+        map(.f = function(data) {
+            
+            # Card 1
+            div(
+                class = "col-sm-4",
+                style = "display:flex;",
+                div(
+                    class = "panel panel-default",
+                    style = "width:100%;",
+                    #  div(
+                    #      class = "panel-heading",
+                    #      span(class = "label label-info", "AWS")
+                    # ),
+                    div(
+                        class = "panel-body",
+                        style = "padding:20px;",
 
-ui <- navbarPage(
+                        # image
+                        tags$img(
+                            class = "img-fluid img-thumbnail",
+                            style = "width:100%;height:auto;border:none;",
+                            src   = data$avatar
+                        ),
+                        
+                        br(), br(),
+                        tags$h4(
+                            data$name,
+                            style = "font-size: 18px; font-weight: bold; text-overflow:ellipsis;"
+                        ),
+                        p(data$description),
+                        a(
+                            type   = "button",
+                            class  = "btn btn-primary",
+                            target = "_blank",
+                            href   = data$url,
+                            "View Repo"
+                        ),
+                        # Github Stars
+                        div(
+                            class = "btn btn-default btn-sm pull-right",
+                            span(class = "glyphicon glyphicon-star", data$stars)
+                        ),
+                        # Github Forks
+                        div(
+                            class = "btn btn-default  btn-sm pull-right",
+                            span(class = "fas fa-code-branch", data$forks)
+                        ),
+                        
+                    ),
+       
+                )
+            )
+        }) %>%
+        
+        tagList()
+}
+
+
+
+
+# UI -----
+ui <- fluidPage(
     
-    title       =  "GitDiscoverer",
-    inverse     = FALSE,
+    # 1.0 HEAD ----
+    tagList(
+        tags$head(HTML("<title>Git Discoverer</title>"))
+    ),
+    style = "padding:0px;",
+    
+    navbar_page_with_inputs(
+    # 2.1 Application Title ----
+    title = div(
+        tags$img(
+            src = "https://www.business-science.io/img/business-science-logo.png",
+            width  = "30",
+            height = "30",
+            style  = "-webkit-filter: drop-shadow(3px 3px 3px #222);"
+        ),
+        "GitDiscoverer"
+    ),
     collapsible = TRUE,
     
     theme = shinytheme("paper"),
     
+    # PANEL START: Trending Repositories ----
     tabPanel(
-        
-        title =  "Trending Repositories",  
-        
-        # CSS ----
-        #shinythemes::themeSelector(),
-        
-        tags$head(
-            tags$link(rel = "stylesheet", type = "text/css", href = "styles.css")  
-        ),
+        title = "Trending Repositories",
         
         # JS ----
         shinyjs::useShinyjs(),
         
-        # 1.0  HEADER ----
+        # Application UI ----
         div(
-            class = "container",
-            id    = "header",
-            h1(class = "page-header","GitDiscoverer", tags$small("placeholder")),
-        ),
-
-        # 2.0 Application UI ----
-        div(
-            class = "container",
             id    = "application_ui",
             column(
-                width = 4,
+                width =3,
                 wellPanel(
                     div(
                         id = "input-main",
@@ -97,15 +154,14 @@ ui <- navbarPage(
                         pickerInput(
                             inputId  = "trend_frequency",
                             label    = "Trending",
-                            choices  = c("Daily", "Weekly", "Monthly"), 
-                            selected = "Daily",
+                            choices  = c("daily", "weekly", "monthly"), 
+                            selected = "daily",
                             multiple = FALSE
                         )
                     ),
-                    
                     div(
                         id = "input_buttons",
-                        actionButton(inputId = "get_trending", label = "Analyze", icon = icon("chart-line")),
+                        actionButton( inputId = "get_trending", label = "Find",icon = icon("chart-line")),
                         div(
                             class = "pull-right",
                             actionButton(inputId = "settings_toggle", label = NULL, icon = icon("cog"))
@@ -118,150 +174,81 @@ ui <- navbarPage(
                         sliderInput(inputId = "repo_stars", label = "Stars", value = 20, min = 5, max = 40),
                         sliderInput(inputId = "repo_forks", label = "Forks", value = 50, min = 50, max = 120)
                     ) %>% hidden()
-                )    
+                )
             ),
             
-            column(
-                width = 8, 
-                div(
-                    class = "panel",
-                    div(
-                        class = "panel-header",
-                        h4("Trending Repositories")
-                    ),
-                    div(
-                        class = "panel-body",
-                        #dataTableOutput(outputId = "repos")
-                        div(
-                            class = "container",
-                            id    = "favorite_cards",
-                            column(
-                                width =3,
-                                info_card(repo_name= 'r-shiny', repo_avatar = "",desc = "hello",forks = "23", stars = "50")
-                            ),
-                            column(
-                                width =3,
-                                info_card(repo_name= 'r4ds', repo_avatar = "",desc = "hello 123",forks = "23", stars = "50")
-                                
-                            )
-                        )
-                    )
-                )
+            # 1.3.2 App Library ----
+            div(
+                class = "container",
+                id    = "app-library",
+                uiOutput(outputId = "output_cards")
             )
-        ),
-    ),
+         )  
+        
+    ), # PANEL END :TR ----
+    
+    # PANEL START:Trending Developers ----
     tabPanel(
-        title = "Trending Developers",
+        title = "Trending Developers"
+    ) # PANEL END :TD ----
+) 
+)
+# SERVER ----    
+server <- function(input, output, session) {
+
+    # Toggle Input Settings ----
+    observeEvent(input$settings_toggle,{
+        toggle(id = "input_settings", anim = TRUE)
+    })
+    
+    # Language Selection ----
+    language <- eventReactive(input$get_trending,{
+        input$language_selection
+    }, ignoreNULL = FALSE)
+    
+    # Trend Frequency ----
+    trend_freq <- eventReactive(input$get_trending,{
+        input$trend_frequency
+    }, ignoreNULL = FALSE)
+    
+    # Trending Repos ---- 
+    trending_repos <- eventReactive(input$analyze,{
+        tr <- trending_repos_on_github(language = language(), since = trend_freq(),gtoken = gtoken)
+        trending_repos <- tibble::rowid_to_column(tr, "id")
+    }, ignoreNULL = FALSE)
+    
+    
+    
+    output$output_cards <- renderUI({
+        
         div(
             class = "container",
-            id    = "application_ui",
-            column(
-                width = 4,
-                wellPanel(
-                    div(
-                        id = "input-main",
-                        pickerInput(
-                            inputId  = "language_selection",
-                            label    = "Language",
-                            choices  = c("Python", "R", "JavaScript"), 
-                            multiple = FALSE,
-                            selected = "R",
-                            options = pickerOptions(
-                                actionsBox = FALSE,
-                                liveSearch = TRUE,
-                                size = 10
-                            )
-                        ),
-                        pickerInput(
-                            inputId  = "trend_frequency",
-                            label    = "Trending",
-                            choices  = c("Daily", "Weekly", "Monthly"), 
-                            selected = "Daily",
-                            multiple = FALSE
-                        )
-                    ),
-                    
-                    div(
-                        id = "input_buttons",
-                        actionButton(inputId = "get_trending", label = "Analyze", icon = icon("chart-line")),
-                    ),
-
-                )    
-            ),
-            
-            column(
-                width = 8, 
-                div(
-                    class = "panel",
-                    div(
-                        class = "panel-header",
-                        h4("Trending Developers")
-                    ),
-                    div(
-                        class = "panel-body",
-                        dataTableOutput(outputId = "dev")
-                    )
-                )
+            div(
+                class = "row",
+                style = "display:-webkit-flex; flex-wrap:wrap;",
+                trending_repos() %>% make_cards()
             )
         )
-    )
-)
         
-        
-        # SERVER ----
-        
-        server <- function(input, output, session) {
-            
-            # Toggle Input Settings ----
-            observeEvent(input$settings_toggle,{
-                toggle(id = "input_settings", anim = TRUE)
-            })
-            
-            
-            # User Input ----
-            
-            language <- eventReactive(input$get_trending,{
-                input$language_selection
-            }, ignoreNULL = FALSE)
-            
-            trend_freq <- eventReactive(input$get_trending,{
-                input$trend_frequency
-            }, ignoreNULL = FALSE)
-            
-            
-            # Get Trending Repositories data ----
-            trending_repos <- reactive({
-                trending_repos_on_github(language = language(), since = trend_freq(), gtoken)
-            })
-            
-            # Trending repositories ----
-            output$repos <- renderDataTable({
-                trending_repos()
-            })
-            
-            # Get Trending Developers data ----
-            trending_dev <- reactive({
-                trending_developers_on_github(language = language(), since = trend_freq(), gtoken)
-            })
-            
-            # Trending repositories ----
-            output$dev <- renderDataTable({
-                trending_dev()
-            })
-       
-            
-        }
-        
-        
-        # RUN APP ----
-        shinyApp(ui = ui, server = server)
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+    })
+
+}    
+
+
+# RUN APP ----
+shinyApp(ui = ui, server = server)
+
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    

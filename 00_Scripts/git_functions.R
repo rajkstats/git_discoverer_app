@@ -25,15 +25,14 @@ github_app_auth <- function() {
 # trending_github_repos() function returns the daily/weekly/monthly trending repos in selected language respectively using unofficial github trending API
 
 trending_repos_on_github <- function(language, since, gtoken) {
-    github_app_auth()
-    
+
     req <- GET(str_glue("https://github-trending-api.now.sh/repositories?language=",language,"&since=",since), gtoken)
     
     # Retreiving results from API
     json <- content(req)
     trending_repos<- jsonlite::fromJSON(jsonlite::toJSON(json)) %>% as_tibble()
-    trending_repos$name <- str_glue('<a href="{trending_repos$url}">{trending_repos$name}"</a>"')
-    trending_repos <-  trending_repos %>% select("author", "name", "description","avatar","stars", "forks", "builtBy", "languageColor")
+    #trending_repos$name <- str_glue('<a href="{trending_repos$url}">{trending_repos$name}"</a>"')
+    trending_repos <-  trending_repos %>% select("author", "name","url", "description","avatar","stars", "forks", "builtBy", "languageColor")
     return(trending_repos)
     
 }
