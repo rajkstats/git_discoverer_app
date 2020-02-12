@@ -250,11 +250,3 @@ server <- function(input, output, session) {
 
 # RUN APP ----
 shinyApp(ui = ui, server = server)
-
-    
-    
-    
-    
-    
-    
-    
