@@ -26,10 +26,12 @@ source(file = "00_scripts/git_functions.R")
 
 
 # FUNCTIONS ----
+github_app_auth()
 
 # FUNCTIONS ----
 navbar_page_with_inputs <- function(...) {
     navbar <- shiny::navbarPage(...)
+
     return(navbar)
 }
 
@@ -109,6 +111,8 @@ ui <- fluidPage(
     ),
     style = "padding:0px;",
     
+    
+    
     navbar_page_with_inputs(
     # 2.1 Application Title ----
     title = div(
@@ -123,17 +127,19 @@ ui <- fluidPage(
     collapsible = TRUE,
     
     theme = shinytheme("paper"),
-    
+
     # PANEL START: Trending Repositories ----
     tabPanel(
         title = "Trending Repositories",
         
         # JS ----
         shinyjs::useShinyjs(),
+
         
         # Application UI ----
         div(
             id    = "application_ui",
+
             column(
                 width =3,
                 wellPanel(
@@ -154,8 +160,8 @@ ui <- fluidPage(
                         pickerInput(
                             inputId  = "trend_frequency",
                             label    = "Trending",
-                            choices  = c("daily", "weekly", "monthly"), 
-                            selected = "daily",
+                            choices  = c("Daily", "Weekly", "Monthly"), 
+                            selected = "Daily",
                             multiple = FALSE
                         )
                     ),
@@ -170,9 +176,10 @@ ui <- fluidPage(
                     
                     div(
                         id = "input_settings",
-                        hr(),
-                        sliderInput(inputId = "repo_stars", label = "Stars", value = 20, min = 5, max = 40),
-                        sliderInput(inputId = "repo_forks", label = "Forks", value = 50, min = 50, max = 120)
+                        hr(), 
+                        radioGroupButtons(inputId = 'var', label = 'Sort By',choices = c(Stars='stars',Forks='forks'),selected = 'stars'),
+                        #actionButton(inputId = "sort_stars", label = "Sort By",icon = icon("star")),
+                        #actionButton(inputId = "sort_forks", label = "Sort By",icon = icon("code-branch")),
                     ) %>% hidden()
                 )
             ),
@@ -191,6 +198,7 @@ ui <- fluidPage(
     tabPanel(
         title = "Trending Developers"
     ) # PANEL END :TD ----
+
 ) 
 )
 # SERVER ----    
@@ -201,6 +209,7 @@ server <- function(input, output, session) {
         toggle(id = "input_settings", anim = TRUE)
     })
     
+    
     # Language Selection ----
     language <- eventReactive(input$get_trending,{
         input$language_selection
@@ -210,15 +219,19 @@ server <- function(input, output, session) {
     trend_freq <- eventReactive(input$get_trending,{
         input$trend_frequency
     }, ignoreNULL = FALSE)
+
     
     # Trending Repos ---- 
-    trending_repos <- eventReactive(input$analyze,{
+    trending_repos <- reactive({
         tr <- trending_repos_on_github(language = language(), since = trend_freq(),gtoken = gtoken)
-        trending_repos <- tibble::rowid_to_column(tr, "id")
-    }, ignoreNULL = FALSE)
+        # Sorting based on selection stars/forks
+        tr <- tr[order(unlist(tr %>% pull(input$var)), decreasing = TRUE),]
+        tr <- tibble::rowid_to_column(tr, "id")
+        
+    })
     
     
-    
+    # Render Trending Cards ----
     output$output_cards <- renderUI({
         
         div(
@@ -226,7 +239,7 @@ server <- function(input, output, session) {
             div(
                 class = "row",
                 style = "display:-webkit-flex; flex-wrap:wrap;",
-                trending_repos() %>% make_cards()
+                trending_repos() %>%  make_cards()
             )
         )
         
@@ -238,13 +251,6 @@ server <- function(input, output, session) {
 # RUN APP ----
 shinyApp(ui = ui, server = server)
 
-
-    
-    
-    
-    
-    
-    
     
     
     
