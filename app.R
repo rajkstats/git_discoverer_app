@@ -21,6 +21,7 @@ library(data.table)
 
 source(file = "00_scripts/git_functions.R")
 source(file = "00_Scripts/info_card.R")
+source(file = "00_Scripts/cards_functions.R")
 
 #trending_repos <- trending_repos_on_github(language = "python", since = "weekly",gtoken = gtoken)
 #trending_repos <- tibble::rowid_to_column(trending_repos, "id")
@@ -37,72 +38,6 @@ navbar_page_with_inputs <- function(...) {
 
     return(navbar)
 }
-
-
-make_cards <- function(data) {
-    data %>%
-        mutate(id = as_factor(id)) %>%
-        group_by(id) %>%
-        group_split() %>%
-        
-        map(.f = function(data) {
-            
-            # Card 1
-            div(
-                class = "col-sm-4",
-                style = "display:flex;",
-                div(
-                    class = "panel panel-default",
-                    style = "width:100%;",
-                    #  div(
-                    #      class = "panel-heading",
-                    #      span(class = "label label-info", "AWS")
-                    # ),
-                    div(
-                        class = "panel-body",
-                        style = "padding:20px;",
-
-                        # image
-                        tags$img(
-                            class = "img-fluid img-thumbnail",
-                            style = "width:100%;height:auto;border:none;",
-                            src   = data$avatar
-                        ),
-                        
-                        br(), br(),
-                        tags$h4(
-                            data$name,
-                            style = "font-size: 18px; font-weight: bold; text-overflow:ellipsis;"
-                        ),
-                        p(data$description),
-                        a(
-                            type   = "button",
-                            class  = "btn btn-primary",
-                            target = "_blank",
-                            href   = data$url,
-                            "View Repo"
-                        ),
-                        # Github Stars
-                        div(
-                            class = "btn btn-default btn-sm pull-right",
-                            span(class = "glyphicon glyphicon-star", data$stars)
-                        ),
-                        # Github Forks
-                        div(
-                            class = "btn btn-default  btn-sm pull-right",
-                            span(class = "fas fa-code-branch", data$forks)
-                        ),
-                        
-                    ),
-       
-                )
-            )
-        }) %>%
-        
-        tagList()
-}
-
-
 
 
 # UI -----
@@ -149,39 +84,39 @@ ui <- fluidPage(
         
         # HEADER -----    
 
-        # 2.0 FAVORITES ----
-        div(
-            class = "container hidden-sm hidden-xs",
-            id = "favorite_container",
-            
-            div(
-                class = "",
-                column(
-                    width = 12,
-                    h5(class= "pull-left","Favorites"),
-                    actionButton(inputId = "favorites_clear", "Clear Favorites", class = "pull-right"),
-                    actionButton(inputId = "favorites_toggle", "Show/Hide", class = "pull-right")
-                )
-            ),
-            div(
-                class = "container",
-                id    = "favorite_cards",
-                column(
-                    width =3,
-                    info_card(repo_name = "AiLearning", 
-                              repo_avatar = "https://avatars3.githubusercontent.com/u/24802038?v=4",
-                              repo_link = "https://github.com/apachecn/AiLearning")
-                ),
-                column(
-                    width =3,
-                    info_card(repo_name = "airflow", 
-                              repo_avatar = "https://avatars0.githubusercontent.com/u/47359?v=4",
-                              repo_link = "https://github.com/apache/airflow")
-
-                )
-            )
-        ),
-        
+        # # 2.0 FAVORITES ----
+        # div(
+        #     class = "container hidden-sm hidden-xs",
+        #     id = "favorite_container",
+        #     
+        #     div(
+        #         class = "",
+        #         column(
+        #             width = 12,
+        #             h5(class= "pull-left","Favorites"),
+        #             actionButton(inputId = "favorites_clear", "Clear Favorites", class = "pull-right"),
+        #             actionButton(inputId = "favorites_toggle", "Show/Hide", class = "pull-right")
+        #         )
+        #     ),
+        #     div(
+        #         class = "container",
+        #         id    = "favorite_cards",
+        #         column(
+        #             width =3,
+        #             info_card(repo_name = "AiLearning", 
+        #                       repo_avatar = "https://avatars3.githubusercontent.com/u/24802038?v=4",
+        #                       repo_link = "https://github.com/apachecn/AiLearning")
+        #         ),
+        #         column(
+        #             width =3,
+        #             info_card(repo_name = "airflow", 
+        #                       repo_avatar = "https://avatars0.githubusercontent.com/u/47359?v=4",
+        #                       repo_link = "https://github.com/apache/airflow")
+        # 
+        #         )
+        #     )
+        # ),
+        # 
         # Application UI ----
         div(
             id    = "application_ui",
@@ -240,7 +175,61 @@ ui <- fluidPage(
     
     # PANEL START:Trending Developers ----
     tabPanel(
-        title = "Trending Developers"
+        title = "Trending Developers",
+        # CSS ----
+        #shinythemes::themeSelector(),
+        tags$head(
+          tags$link(rel = "stylesheet", type = "text/css", href = "styles.css")
+        ),
+        
+        # JS ----
+        shinyjs::useShinyjs(),
+        
+        # Application UI ----
+        div(
+          id    = "application_ui_dev",
+          class = "container",
+          column(
+            width =3,
+            wellPanel(
+              div(
+                id = "input-main-dev",
+                pickerInput(
+                  inputId  = "language_selection_dev",
+                  label    = "Language",
+                  choices  = c("R", "Python", "JavaScript"), 
+                  multiple = FALSE,
+                  selected = "R",
+                  options = pickerOptions(
+                    actionsBox = FALSE,
+                    liveSearch = TRUE,
+                    size = 10
+                  )
+                ),
+                pickerInput(
+                  inputId  = "trend_frequency_dev",
+                  label    = "Trending",
+                  choices  = c("Daily", "Weekly", "Monthly"), 
+                  selected = "Daily",
+                  multiple = FALSE
+                )
+              ),
+              div(
+                id = "input_buttons_dev",
+                actionButton( inputId = "get_trending_dev", label = "Find",icon = icon("chart-line")),
+              )
+            )
+          ),
+          
+          
+          # 1.3.2 App Library ----
+          div(
+            class = "container",
+            id    = "cards-dev",
+            uiOutput(outputId = "output_dev_cards")
+          )
+        )
+        
     ) # PANEL END :TD ----
 
 ) 
@@ -271,6 +260,25 @@ server <- function(input, output, session) {
         tr <- tibble::rowid_to_column(tr, "id")
         
     })
+    
+    # Language Selection Developers ----
+    language_dev <- eventReactive(input$get_trending_dev,{
+      input$language_selection_dev
+    }, ignoreNULL = FALSE)
+    
+    # Trend Frequency Developers ----
+    trend_freq_dev <- eventReactive(input$get_trending_dev,{
+      input$trend_frequency_dev
+    }, ignoreNULL = FALSE)
+    
+    # Trending Developers ---- 
+    trending_dev <- reactive({
+      tr <- trending_developers_on_github(language = language_dev(), since = trend_freq_dev(),gtoken = gtoken)
+      # Sorting based on selection stars/forks
+      tr <- tibble::rowid_to_column(tr, "id")
+      
+    })
+    
     
     # FAVORITES ----
     
@@ -378,6 +386,22 @@ server <- function(input, output, session) {
         
     })
 
+    
+    # Render Trending Developers Cards ----
+    output$output_dev_cards <- renderUI({
+      
+      div(
+        class = "container",
+        div(
+          class = "row",
+          style = "display:-webkit-flex; flex-wrap:wrap;",
+          trending_dev() %>%  make_dev_cards()
+        )
+      )
+      
+    })
+    
+    
 }    
 
 

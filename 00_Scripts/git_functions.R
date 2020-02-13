@@ -44,17 +44,17 @@ trending_developers_on_github <- function(language,since,gtoken){
     req <- GET(paste0("https://github-trending-api.now.sh/developers?language=",language,"&since=",since), gtoken)
     json <- content(req)
     trending_dev <- jsonlite::fromJSON(jsonlite::toJSON(json)) %>% as_tibble() 
-    trending_dev <- data.table(username = trending_dev$username,name = trending_dev$username,url = trending_dev$url,avatar = trending_dev$avatar,repo_name = trending_dev$repo$name,repo_desc = trending_dev$repo$description,repo_url = trending_dev$repo$url,stringsAsFactors = TRUE)
+    trending_dev <- data.table(username = trending_dev$username,name = trending_dev$name,url = trending_dev$url,avatar = trending_dev$avatar,repo_name = trending_dev$repo$name,repo_desc = trending_dev$repo$description,repo_url = trending_dev$repo$url,stringsAsFactors = TRUE)
     
     #checks whether any developer name is NULL, then replace by username
     pos <- which(trending_dev$name == 'NULL')
     ifelse(length(pos) > 0,trending_dev$name[pos]<- trending_dev$username[pos],"")
     
-    trending_dev$name <- paste0('<a href="',trending_dev$url,'">',trending_dev$username ,"</a>")
-    trending_dev$repo_name <- paste0('<a href="',trending_dev$repo_url,'">',trending_dev$repo_name ,"</a>")
-    trending_dev$avatar<- paste0('<img src="',trending_dev$avatar,'" height="52"></img>')
-    trending_dev <- trending_dev[,c(4,2,5,6)]
-    colnames(trending_dev) <- c("Developer","Name","Repository","Description")
+    #trending_dev$name <- paste0('<a href="',trending_dev$url,'">',trending_dev$username ,"</a>")
+    #trending_dev$repo_name <- paste0('<a href="',trending_dev$repo_url,'">',trending_dev$repo_name ,"</a>")
+    #trending_dev$avatar<- paste0('<img src="',trending_dev$avatar,'" height="52"></img>')
+    #trending_dev <- trending_dev[,c(4,2,5,6)]
+    #colnames(trending_dev) <- c("Developer","Name","Repository","Description")
     
     return(trending_dev)
 }
