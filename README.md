@@ -12,4 +12,5 @@
  - See if you can add Machine Learning and Deep Learning Trending Projects 
 
 # Resources
-- http://www.gharchive.org/
+- GHArchive (http://www.gharchive.org/)
+- Visualising Git commits [https://deanattali.com/blog/visualize-git-commits-time/]
