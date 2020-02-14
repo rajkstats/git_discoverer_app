@@ -1,5 +1,6 @@
 # GitDiscoverer V2
 
+- Add Dev Trends Page showing ds trends over time
 - Average time to close Issue/ Average time to Close Pull Requests - Developer page
 - User specific tab - User details as of now plus - No of commits - Languages - Language wise commits - Recommending Repositories based on user profile
  - See if you can add Machine Learning and Deep Learning Trending Projects 
