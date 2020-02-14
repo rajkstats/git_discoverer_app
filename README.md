@@ -1,9 +1,9 @@
 # GitDiscoverer V2
 
 - Add **Dev Trends** Page showing ds trends over time ( Use gganimate + highcharts for visualization)
+- Popular **Deep Learning and Machine Learning Projects** Page
 - Average time to close Issue/ Average time to Close Pull Requests - **Developer page**
 - User specific tab - User details as of now plus - No of commits - Languages - Language wise commits - Recommending Repositories based on user profile
-- See if you can add Machine Learning and Deep Learning Trending Projects (open-source) 
 - Favorite Repos - [Refer Dynamic Shiny Modules](https://www.zstat.pl/2018/06/19/dynamic-modules-in-shiny---part-ii/)
 - Welcome User method
 - Landing Page
