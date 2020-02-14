@@ -8,7 +8,7 @@
 - Welcome User method
 - Landing Page
 - Add repo [tags](https://developer.github.com/v3/git/tags/) on top of each card
-- Recommending Github Repositories
+- [Recommending Github Repositories](https://towardsdatascience.com/recommending-github-repositories-with-google-bigquery-and-the-implicit-library-e6cce666c77)
 
 # Data (ToDo)
 
