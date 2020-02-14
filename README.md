@@ -11,7 +11,7 @@
 - Landing Page
 - Add repo [tags](https://developer.github.com/v3/git/tags/) on top of each card
 - [Recommending Github Repositories](https://towardsdatascience.com/recommending-github-repositories-with-google-bigquery-and-the-implicit-library-e6cce666c77)
-
+- User Report Card
 # Data (ToDo)
 
 - write a bash script to pull hourly dumps of github logs and schedule it on airflow
