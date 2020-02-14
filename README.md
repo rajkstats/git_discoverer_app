@@ -31,3 +31,4 @@
 - [GHArchive](http://www.gharchive.org/)
 - [Visualising Git commits](https://deanattali.com/blog/visualize-git-commits-time/)
 - [Trending Deep Learning Repos](https://www.kdnuggets.com/2019/02/trending-top-deep-learning-github-repositories.html)
+- [Github Analyses](https://mytinyshinys.shinyapps.io/githubAnalyses/)
