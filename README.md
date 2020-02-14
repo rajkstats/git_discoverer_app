@@ -7,6 +7,7 @@
 - Favorite Repos - [Refer Dynamic Shiny Modules](https://www.zstat.pl/2018/06/19/dynamic-modules-in-shiny---part-ii/)
 - Welcome User method
 - Landing Page
+- Add repo tags on top of each card
 
 # Data (ToDo)
 
