@@ -33,3 +33,4 @@
 - [Trending Deep Learning Repos](https://www.kdnuggets.com/2019/02/trending-top-deep-learning-github-repositories.html)
 - [Github Analyses](https://mytinyshinys.shinyapps.io/githubAnalyses/)
 - [Visualize your Github Repository](https://www.boldbi.com/blog/analyze-and-visualize-your-github-repository-statistics-data)
+- [Github Analytics](https://keen.io/docs/integrations/github/)
