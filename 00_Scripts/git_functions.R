@@ -59,4 +59,62 @@ trending_developers_on_github <- function(language,since,gtoken){
     return(trending_dev)
 }
 
+# Github Trending Deep Learing Projects -----
+#https://api.github.com/search/repositories?q=deep-learning OR CNN OR RNN OR "convolutional neural network" OR "recurrent neural network"&sort=stars&order=desc
+
+# Github Trending Machine Learning Projects  ----
+#https://api.github.com/search/repositories?q=machine-learning OR "ml" OR "machine learning"+lnaguage:R&sort=stars&order=desc
+
+trending_projects_on_github <- function(project, language) {
+    
+    if(project == "dl") {
+        search_q <- 'deep-learning OR CNN OR RNN OR "convolutional neural network" OR "recurrent neural network"'
+    } else if(project == "ml") {
+        search_q <- 'machine-learning OR ml'
+    } 
+    
+    filter <- '&sort=stars&order=desc'
+    
+    url <- modify_url("https://api.github.com", path = "search/repositories", query = list(q = search_q))
+
+    # modified url
+    m_url <- str_glue(url,"+language:",language,filter, collapse ="")
+    
+    req<- GET(m_url)
+    
+    if(status_code(req)!=200){
+        print("Error in Request")
+    }
+        
+    #length(content(req)$items)
+    
+    json <- content(req)
+    
+    #str(json, max.level = 1)   
+    
+    good_stuff <- json %>% 
+        as_tibble() %>%
+        flatten() 
+    
+    # extracting relevant columns
+    df <- good_stuff %>%
+        pull(items) %>%
+        map_df(`[`, c( "name", "html_url", "description","stargazers_count", "forks" ,"language"))
+    
+
+    # changing column names for convenience
+    colnames(df) <- c("repo_name", "repo_url", "repo_desc","stars","forks", "language")
+    
+    # gets repo avatar and user type (user/org)
+    dt <-  good_stuff %>% 
+        pull(items) %>%
+        map_df(`[[`, c("owner"))
+    
+    result <- data.table(df,avatar = dt$avatar_url, user_type = dt$type )
+    
+    return(result)
+    
+}
+
+
 
