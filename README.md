@@ -25,6 +25,9 @@
 - Add Sort By Button: Stars and Forks
 - Add a search bar which shows languages as you search (its no more data science specific)
 
+# Shiny Themes
+-[DreamR](https://dreamrs.github.io/fresh/)
+- 
 
 # Resources
 
