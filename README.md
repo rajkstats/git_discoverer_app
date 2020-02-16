@@ -27,7 +27,7 @@
 
 # Shiny Themes
 - [DreamR](https://dreamrs.github.io/fresh/)
-- [waiteR for Loading Screens] (https://shiny.john-coene.com/waiter/)
+- [waiteR for Loading Screens](https://shiny.john-coene.com/waiter/)
 - [seveR for Disconnected Screens](https://github.com/JohnCoene/sever)
 
 # Resources
