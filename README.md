@@ -26,8 +26,9 @@
 - Add a search bar which shows languages as you search (its no more data science specific)
 
 # Shiny Themes
--[DreamR](https://dreamrs.github.io/fresh/)
-- 
+- [DreamR](https://dreamrs.github.io/fresh/)
+- [waiteR for Loading Screens] (https://shiny.john-coene.com/waiter/)
+- [seveR for Disconnected Screens](https://github.com/JohnCoene/sever)
 
 # Resources
 
