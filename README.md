@@ -42,4 +42,5 @@
 - [Github Analyses](https://mytinyshinys.shinyapps.io/githubAnalyses/)
 - [Visualize your Github Repository](https://www.boldbi.com/blog/analyze-and-visualize-your-github-repository-statistics-data)
 - [Github Analytics](https://keen.io/docs/integrations/github/)
+- [Github Dashboard](http://shinyapps.dreamrs.fr/github-dashboard/)
 
