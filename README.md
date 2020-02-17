@@ -26,6 +26,9 @@
 - Add Sort By Button: Stars and Forks
 - Add a search bar which shows languages as you search (its no more data science specific)
 
+# Shiny Widgets
+- [Tell me Story](https://github.com/hadley/mastering-shiny/blob/master/neiss/narrative.R)
+
 # Shiny Themes
 - [DreamR](https://dreamrs.github.io/fresh/)
 - [waiteR for Loading Screens](https://shiny.john-coene.com/waiter/)
@@ -39,3 +42,4 @@
 - [Github Analyses](https://mytinyshinys.shinyapps.io/githubAnalyses/)
 - [Visualize your Github Repository](https://www.boldbi.com/blog/analyze-and-visualize-your-github-repository-statistics-data)
 - [Github Analytics](https://keen.io/docs/integrations/github/)
+
