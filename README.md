@@ -1,7 +1,7 @@
 # GitDiscoverer V2
 
 - Add **Dev Trends** Page showing ds trends over time ( Use gganimate + highcharts for visualization)
-- Popular **Deep Learning** and **Machine Learning** Projects Page
+- Popular **Deep Learning** and **Machine Learning** Projects Page - Done
 - Developer Stats
   - Average time to close Issue/ Average time to Close Pull Requests - **Developer page**
   - Comments , Commits, Stars, Forks, Pull Requests, Opened, PR Merged
@@ -12,6 +12,7 @@
 - Add repo [tags](https://developer.github.com/v3/git/tags/) on top of each card
 - [Recommending Github Repositories](https://towardsdatascience.com/recommending-github-repositories-with-google-bigquery-and-the-implicit-library-e6cce666c77)
 - User Report Card
+- Add **pop up boxes** for info 
 # Data (ToDo)
 
 - write a bash script to pull hourly dumps of github logs and schedule it on airflow
