@@ -18,6 +18,7 @@
 - Add **pop up boxes** for info 
 - Popular Gists By Developer
 - Listing organisation all repositories including private ones
+- Trending Docker Images by Language (R/Python)
 
 # Data (ToDo)
 
