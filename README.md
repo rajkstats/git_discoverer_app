@@ -12,6 +12,9 @@
 - Add repo [tags](https://developer.github.com/v3/git/tags/) on top of each card
 - [Recommending Github Repositories](https://towardsdatascience.com/recommending-github-repositories-with-google-bigquery-and-the-implicit-library-e6cce666c77)
 - User Report Card
+  - Month Wise commits (Current Year)
+  - Commits in Each Year
+  - Repo wise Commits
 - Add **pop up boxes** for info 
 - Popular Gists By Developer
 - Listing organisation all repositories including private ones
@@ -47,4 +50,5 @@
 - [Visualize your Github Repository](https://www.boldbi.com/blog/analyze-and-visualize-your-github-repository-statistics-data)
 - [Github Analytics](https://keen.io/docs/integrations/github/)
 - [Github Dashboard](http://shinyapps.dreamrs.fr/github-dashboard/)
+- [Github Analysis - Python](https://towardsdatascience.com/github-user-insights-using-github-api-data-collection-and-analysis-5b7dca1ab214)
 
