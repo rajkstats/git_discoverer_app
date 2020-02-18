@@ -4,7 +4,7 @@
 - Popular **Deep Learning** and **Machine Learning** Projects Page - Done
 - Info pop-up for Developer Stats
   - Average time to close Issue/ Average time to Close Pull Requests - **Developer page**
-  - Comments , Commits, Stars, Forks, Pull Requests, Opened, PR Merged
+  - Comments , Commits, Stars, Forks, Pull Requests, Opened, PR Merged, Total Gists
   - User specific tab - User details as of now plus - No of commits - Languages - Language wise commits - Recommending             Repositories based on user profile
 - Favorite Repos - [Refer Dynamic Shiny Modules](https://www.zstat.pl/2018/06/19/dynamic-modules-in-shiny---part-ii/)
 - Welcome User method
@@ -13,6 +13,7 @@
 - [Recommending Github Repositories](https://towardsdatascience.com/recommending-github-repositories-with-google-bigquery-and-the-implicit-library-e6cce666c77)
 - User Report Card
 - Add **pop up boxes** for info 
+- Popular Gists By Developer
 
 # Data (ToDo)
 
