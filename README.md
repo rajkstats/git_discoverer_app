@@ -14,6 +14,7 @@
 - User Report Card
 - Add **pop up boxes** for info 
 - Popular Gists By Developer
+- Listing organisation all repositories including private ones
 
 # Data (ToDo)
 
