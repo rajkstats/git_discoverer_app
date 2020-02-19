@@ -26,6 +26,7 @@
 - Activity for 1/1/2019 : wget http://data.gharchive.org/2019-01-01-{0..23}.json.gz
 - Come up iwth Infra for the daily compute and cost of project
 - Decide where to store this data (infrastructure / persistent database (sqlite))
+- Explore [DataCache](https://github.com/jbryer/DataCache) for caching results in Shiny
 
 # Done
 
