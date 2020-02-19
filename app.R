@@ -18,12 +18,18 @@ library(shinyWidgets) # Custom inputs widgets for Shiny.
 library(shiny) # Some advanced functionality depends on the shiny package being loaded server-side
 library(shinyjs)
 library(data.table)
+library(dplyr)
 library(purrr)
+library(waiter) # For Loadimng Screens
+library(shinycssloaders)
 
-source(file = "00_scripts/git_functions.R")
+source(file = "00_Scripts/git_functions.R")
 source(file = "00_Scripts/info_card.R")
 source(file = "00_Scripts/cards_functions.R")
+source(file = "00_Scripts/helper_functions.R")
 
+
+options(shiny.autoreload = TRUE)
 #trending_repos <- trending_repos_on_github(language = "python", since = "weekly",gtoken = gtoken)
 #trending_repos <- tibble::rowid_to_column(trending_repos, "id")
 
@@ -31,281 +37,274 @@ source(file = "00_Scripts/cards_functions.R")
 # Application Auth ----
 github_app_auth()
 
-current_user_favorites <- c("AAPL", "GOOG", "NFLX")
+#current_user_favorites <- c("AAPL", "GOOG", "NFLX")
 
 # FUNCTIONS ----
 navbar_page_with_inputs <- function(...) {
-    navbar <- shiny::navbarPage(...)
-
-    return(navbar)
+  navbar <- shiny::navbarPage(...)
+  
+  return(navbar)
 }
 
 
 # UI -----
 ui <- fluidPage(
   
+  shinyjs::useShinyjs(),
+  #includeCSS("www/loading-content.css"),
+  
   # 1.0 HEAD ----
   tagList(
-    tags$head(HTML("<title>Git Discoverer</title>"))
+    tags$head(HTML("<title>Git Discoverer</title>")),
     
   ),
   style = "padding:0px;",
   
   
-
-  navbar_page_with_inputs(
-    
-    
-    # 2.1 Application Title ----
-    title = div(
-      tags$img(
-        src = "https://www.business-science.io/img/business-science-logo.png",
-        width  = "30",
-        height = "30",
-        style  = "-webkit-filter: drop-shadow(3px 3px 3px #222);"
-      ),
-      "GitDiscoverer"
-    ),
-    collapsible = TRUE,
-    
-    theme = shinytheme("paper"),
-    
-    
-    # PANEL START: Trending Repositories ----
-    tabPanel(
-      title = "Trending Repositories",
+  #div(id = "loading-content", "Hard = Those that create something you'd be proud of...",
+  #   img(src = "ajax-loader-bar.gif")),
+  
+  
+  
+  # The main app code goes here
+  hidden(
+    div(
       
-      # CSS ----
-      #shinythemes::themeSelector(),
-      tags$head(
-        tags$link(rel = "stylesheet", type = "text/css", href = "styles.css")
-      ),
-      
-      # JS ----
-      shinyjs::useShinyjs(),
+      id = "app-content",
       
       
-      # HEADER -----    
-      
-      # # 2.0 FAVORITES ----
-      # div(
-      #     class = "container hidden-sm hidden-xs",
-      #     id = "favorite_container",
-      #     
-      #     div(
-      #         class = "",
-      #         column(
-      #             width = 12,
-      #             h5(class= "pull-left","Favorites"),
-      #             actionButton(inputId = "favorites_clear", "Clear Favorites", class = "pull-right"),
-      #             actionButton(inputId = "favorites_toggle", "Show/Hide", class = "pull-right")
-      #         )
-      #     ),
-      #     div(
-      #         class = "container",
-      #         id    = "favorite_cards",
-      #         column(
-      #             width =3,
-      #             info_card(repo_name = "AiLearning", 
-      #                       repo_avatar = "https://avatars3.githubusercontent.com/u/24802038?v=4",
-      #                       repo_link = "https://github.com/apachecn/AiLearning")
-      #         ),
-      #         column(
-      #             width =3,
-      #             info_card(repo_name = "airflow", 
-      #                       repo_avatar = "https://avatars0.githubusercontent.com/u/47359?v=4",
-      #                       repo_link = "https://github.com/apache/airflow")
-      # 
-      #         )
-      #     )
-      # ),
-      # 
-      # Application UI ----
-      div(
-        id    = "application_ui",
-        class = "container",
-        column(
-          width =3,
-          wellPanel(
-            div(
-              id = "input-main",
-              pickerInput(
-                inputId  = "language_selection",
-                label    = "Language",
-                choices  = c("R", "Python", "JavaScript"), 
-                multiple = FALSE,
-                selected = "R",
-                options = pickerOptions(
-                  actionsBox = FALSE,
-                  liveSearch = TRUE,
-                  size = 10
-                )
-              ),
-              pickerInput(
-                inputId  = "trend_frequency",
-                label    = "Trending",
-                choices  = c("Daily", "Weekly", "Monthly"), 
-                selected = "Daily",
-                multiple = FALSE
-              )
-            ),
-            div(
-              id = "input_buttons",
-              actionButton( inputId = "get_trending", label = "Find",icon = icon("chart-line")),
-              div(
-                class = "pull-right",
-                actionButton(inputId = "settings_toggle", label = NULL, icon = icon("cog"))
-              )
-            ),
-            div(
-              id = "input_settings",
-              hr(), 
-              radioGroupButtons(inputId = 'var', label = 'Sort By',choices = c(Stars='stars',Forks='forks'),selected = 'stars'),
-            ) %>% hidden()
-          )
+      navbar_page_with_inputs(
+        
+        
+        # 2.1 Application Title ----
+        title = div(
+          # tags$img(
+          #   src = "gd.png",
+          #   width  = "30",
+          #   height = "30",
+          #   style  = "-webkit-filter: drop-shadow(3px 3px 3px #222);"
+          # ),
+          tags$h1("GitDiscoverer"),
+          tags$style(HTML("
+                        @import url('//fonts.googleapis.com/css?family=Titillium+Web:700');
+                        
+                        h1{
+                        font-family:'Titillium Web', sans-serif;;
+                        font-size: 30px;
+                        font-weight: 400;
+                        letter-spacing: -1px;
+                        line-height: 1.2;
+                        display:contents;
+                        #color: #008B8B;
+                        }
+                        
+                        ")) #style closed
+          
         ),
+        collapsible = TRUE,
         
+        theme = shinytheme("paper"),
         
-        # 1.3.2 App Library ----
-        div(
-          class = "container",
-          id    = "app-library",
-          uiOutput(outputId = "output_cards")
-        )
-      )  
-      
-    ), # PANEL END :TR ----
-    
-    # PANEL START:Trending Developers ----
-    tabPanel(
-      title = "Trending Developers",
-      
-      # CSS ----
-      #shinythemes::themeSelector(),
-      tags$head(
-        tags$link(rel = "stylesheet", type = "text/css", href = "styles.css")
-      ),
-      
-      # JS ----
-      shinyjs::useShinyjs(),
-      
-      # Application UI ----
-      div(
-        id    = "application_ui_dev",
-        class = "container",
-        column(
-          width =3,
-          wellPanel(
-            div(
-              id = "input-main-dev",
-              pickerInput(
-                inputId  = "language_selection_dev",
-                label    = "Language",
-                choices  = c("R", "Python", "JavaScript"), 
-                multiple = FALSE,
-                selected = "R",
-                options = pickerOptions(
-                  actionsBox = FALSE,
-                  liveSearch = TRUE,
-                  size = 10
-                )
-              ),
-              pickerInput(
-                inputId  = "trend_frequency_dev",
-                label    = "Trending",
-                choices  = c("Daily", "Weekly", "Monthly"), 
-                selected = "Daily",
-                multiple = FALSE
+        # PANEL START: Trending Repositories ----
+        tabPanel(
+          title = "Trending Repositories",
+          
+          # CSS ----
+          #shinythemes::themeSelector(),
+          tags$head(
+            tags$link(rel = "stylesheet", type = "text/css", href = "styles.css")
+          ),
+          
+          # JS ----
+          shinyjs::useShinyjs(),
+          
+          
+          # HEADER -----    
+          
+          # 2.0 FAVORITES ----
+          # div(
+          #     class = "container hidden-sm hidden-xs",
+          #     id = "favorite_container",
+          # 
+          #     div(
+          #         class = "",
+          #         column(
+          #             width = 12,
+          #             h5(class= "pull-left","Favorites"),
+          #             actionButton(inputId = "favorites_clear", "Clear Favorites", class = "pull-right"),
+          #             actionButton(inputId = "favorites_toggle", "Show/Hide", class = "pull-right")
+          #         )
+          #     ),
+          #     div(
+          #         class = "container",
+          #         id    = "favorite_cards",
+          #         column(
+          #             width =3,
+          #             info_card(repo_name = "AiLearning",
+          #                       repo_avatar = "https://avatars3.githubusercontent.com/u/24802038?v=4",
+          #                       repo_link = "https://github.com/apachecn/AiLearning")
+          #         ),
+          #         column(
+          #             width =3,
+          #             info_card(repo_name = "airflow",
+          #                       repo_avatar = "https://avatars0.githubusercontent.com/u/47359?v=4",
+          #                       repo_link = "https://github.com/apache/airflow")
+          # 
+          #         )
+          #     )
+          # ),
+
+          
+          # Application UI ----
+          div(
+            id    = "application_ui",
+            class = "container",
+            column(
+              width =3,
+              wellPanel(
+                div(
+                  id = "input-main",
+                  pickerInputLang(inputId = "language_selection",choices  = c("R", "Python", "JavaScript")),
+                  pickerInputTrend(inputId  = "trend_frequency"),
+                ),
+                div(
+                  id = "input_buttons",
+                  actionButtonFind(inputId = "get_trending"),
+                  div(
+                    class = "pull-right",
+                    actionButtonSettings(inputId = "settings_toggle")
+                  )
+                ),
+                div(
+                  id = "input_settings",
+                  hr(), 
+                  radioButtonsSort(inputId = 'var'),
+                ) %>% hidden()
               )
             ),
+            
+            
+            # 1.3.2 App Library ----
             div(
-              id = "input_buttons_dev",
-              actionButton( inputId = "get_trending_dev", label = "Find",icon = icon("chart-line")),
+              class = "container",
+              id    = "app-library",
+              uiOutput(outputId = "output_cards")
+            )
+          )  
+          
+        ), # PANEL END :TR ----
+        
+        # PANEL START:Trending Developers ----
+        tabPanel(
+          title = "Trending Developers",
+          
+          # CSS ----
+          #shinythemes::themeSelector(),
+          tags$head(
+            tags$link(rel = "stylesheet", type = "text/css", href = "styles.css")
+          ),
+          
+          # JS ----
+          shinyjs::useShinyjs(),
+          
+          # Application UI ----
+          div(
+            id    = "application_ui_dev",
+            class = "container",
+            column(
+              width =3,
+              wellPanel(
+                div(
+                  id = "input-main-dev",
+                  pickerInputLang(inputId = "language_selection_dev",choices  = c("R", "Python", "JavaScript")),
+                  pickerInputTrend(inputId  = "trend_frequency_dev")
+                ),
+                div(
+                  id = "input_buttons_dev",
+                  actionButtonFind(inputId = "get_trending_dev"),
+                )
+              )
+            ),
+            
+            
+            # 1.3.2 App Library ----
+            div(
+              class = "container",
+              id    = "cards-dev",
+              uiOutput(outputId = "output_dev_cards")
             )
           )
-        ),
+          
+        ), # PANEL END :TD ----
         
-        
-        # 1.3.2 App Library ----
-        div(
-          class = "container",
-          id    = "cards-dev",
-          uiOutput(outputId = "output_dev_cards")
-        )
-      )
-      
-    ), # PANEL END :TD ----
-    
-    # PANEL START:Trending Projects ----
-    tabPanel(
-      title = "Trending Projects",
-      # CSS ----
-      #shinythemes::themeSelector(),
-      tags$head(
-        tags$link(rel = "stylesheet", type = "text/css", href = "styles.css")
-      ),
-      
-      # JS ----
-      shinyjs::useShinyjs(),
-      
-      # Application UI ----
-      div(
-        id    = "application_ui_projects",
-        class = "container",
-        column(
-          width =3,
-          wellPanel(
-            div(
-              id = "input-main-project",
-              pickerInput(
-                inputId  = "language_selection_project",
-                label    = "Language",
-                choices  = c("R", "Python"), 
-                multiple = FALSE,
-                selected = "R",
-                options = pickerOptions(
-                  actionsBox = FALSE,
-                  liveSearch = TRUE,
-                  size = 10
-                )
-              ),
-              pickerInput(
-                inputId  = "project_selection",
-                label    = "Project",
-                choices  = c(ML = "ml", DL = "dl"), 
-                selected = "ml",
-                multiple = FALSE
+        # PANEL START:Trending Projects ----
+        tabPanel(
+          title = "Trending Projects",
+          # CSS ----
+          #shinythemes::themeSelector(),
+          tags$head(
+            tags$link(rel = "stylesheet", type = "text/css", href = "styles.css")
+          ),
+          
+          # JS ----
+          shinyjs::useShinyjs(),
+          
+          # Application UI ----
+          div(
+            id    = "application_ui_projects",
+            class = "container",
+            column(
+              width =3,
+              wellPanel(
+                div(
+                  id = "input-main-project",
+                  pickerInputLang(inputId  = "language_selection_project",choices  = c("R", "Python")),
+                  pickerInput(
+                    inputId  = "project_selection",
+                    label    = "Project",
+                    choices  = c(ML = "ml", DL = "dl"), 
+                    selected = "ml",
+                    multiple = FALSE
+                  )
+                ),
+                div(
+                  id = "input_buttons_pro",
+                  actionButtonFind(inputId = "get_trending_pro"),
+                  div(
+                    class = "pull-right",
+                    actionButtonSettings(inputId = "settings_toggle_pro")
+                  )
+                ),
+                div(
+                  id = "input_settings_pro",
+                  hr(), 
+                  radioButtonsSort(inputId = 'var1')
+                ) %>% hidden()
               )
             ),
+            
+            # 1.3.2 App Library ----
             div(
-              id = "input_buttons_pro",
-              actionButton( inputId = "get_trending_pro", label = "Find",icon = icon("chart-line")),
-              div(
-                class = "pull-right",
-                actionButton(inputId = "settings_toggle_pro", label = NULL, icon = icon("cog"))
-              )
-            ),
-            div(
-              id = "input_settings_pro",
-              hr(), 
-              radioGroupButtons(inputId = 'var1', label = 'Sort By',choices = c(Stars='stars',Forks='forks'),selected = 'stars'),
-            ) %>% hidden()
+              class = "container",
+              id    = "cards-project",
+              uiOutput(outputId = "output_project_cards")
+            )
           )
-        ),
-    
-      # 1.3.2 App Library ----
-      div(
-        class = "container",
-        id    = "cards-project",
-        uiOutput(outputId = "output_project_cards")
+        )# TabPanel Projects End ----
       )
     )
-  )# TabPanel Projects End ----
-)
+  )
 )
 
 # SERVER ----    
 server <- function(input, output, session) {
+  
+  # Simulate work being done for 1 second
+  #show("loading-content") # make the loading pane appear
+  
+  #Sys.sleep(2)
+  
+  show("app-content")
   
   # Toggle Input Settings ----
   observeEvent(input$settings_toggle,{
@@ -324,6 +323,7 @@ server <- function(input, output, session) {
   
   # Trending Repos ---- 
   trending_repos <- reactive({
+    
     tr <- trending_repos_on_github(language = language(), since = trend_freq(),gtoken = gtoken)
     # Sorting based on selection stars/forks
     tr <- tr[order(unlist(tr %>% pull(input$var)), decreasing = TRUE),]
@@ -509,6 +509,7 @@ server <- function(input, output, session) {
     
   })
   
+  hide("loading-content",anim=TRUE, animType = "fade") # make the loading pane disappear
   
   
 }    

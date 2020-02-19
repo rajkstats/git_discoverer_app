@@ -1,4 +1,19 @@
 
+make_tags <- function(data) {
+  data %>%
+    mutate(tag = as_factor(tag)) %>%
+    group_by(tag) %>%
+    group_split() %>%
+    
+    map(.f = function(data){
+      span(class = str_glue("label label-success"), data$tag)
+    }) %>%
+    
+    tagList()
+}
+
+
+nrow(trending_repos$tags[[16]])
 # Make Repository Cards ----
 make_cards <- function(data) {
     data %>%
@@ -15,10 +30,17 @@ make_cards <- function(data) {
                 div(
                     class = "panel panel-default",
                     style = "width:100%;",
-                    #  div(
-                    #      class = "panel-heading",
-                    #      span(class = "label label-info", "AWS")
-                    # ),
+                    
+                    #actionButton(inputId = "bookmark", label = "BookMark", icon = icon(class = "pull-right" , "bookmark")),
+      
+                    #actionButton(inputId = "bookmark",label = "Book mark",icon = icon("bookmark")),
+          
+                    #For Adding tags on cards ----
+                    if(nrow(data %>% pluck("tags",1))!=0) {
+                      div(
+                        class = "panel-heading",
+                        data %>% pluck("tags",1) %>% make_tags()     
+                    )},
                     div(
                         class = "panel-body",
                         style = "padding:20px;",

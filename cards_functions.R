@@ -13,10 +13,10 @@ make_cards <- function(data) {
                 div(
                     class = "panel panel-default",
                     style = "width:100%;",
-                    #  div(
-                    #      class = "panel-heading",
-                    #      span(class = "label label-info", "AWS")
-                    # ),
+                     div(
+                         class = "panel-heading",
+                         span(class = "label label-info", "AWS")
+                    ),
                     div(
                         class = "panel-body",
                         style = "padding:20px;",
