@@ -19,6 +19,7 @@
 - Popular Gists By Developer
 - Listing organisation all repositories including private ones
 - Trending Docker Images by Language (R/Python)
+- Predicting Topic Tags for a Repository
 
 # Data (ToDo)
 
