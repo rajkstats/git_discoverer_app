@@ -53,6 +53,7 @@ trending_repos_on_github <- function(language, since, gtoken) {
     trending_repos <- trending_repos %>%
          rowwise() %>%
          mutate(tags = get_repo_tags(author,name)) %>% as_tibble() 
+    
     return(trending_repos)
     
 }
@@ -69,7 +70,7 @@ trending_developers_on_github <- function(language,since,gtoken){
     #checks whether any developer name is NULL, then replace by username
     pos <- which(trending_dev$name == 'NULL')
     ifelse(length(pos) > 0,trending_dev$name[pos]<- trending_dev$username[pos],"")
-    
+
     return(trending_dev)
 }
 
@@ -92,7 +93,7 @@ trending_projects_on_github <- function(project, language) {
     # modified url
     m_url <- str_glue(url,"+language:",language,filter, collapse ="")
     
-    req<- GET(m_url)
+    req<- GET(m_url, gtoken)
     
     if(status_code(req)!=200){
         print("Error in Request")
@@ -113,7 +114,7 @@ trending_projects_on_github <- function(project, language) {
         pull(items) %>%
         map_df(`[`, c( "name", "html_url", "description","stargazers_count", "forks" ,"language"))
     
-
+    
     # changing column names for convenience
     colnames(df) <- c("repo_name", "repo_url", "repo_desc","stars","forks", "language")
     
@@ -122,7 +123,11 @@ trending_projects_on_github <- function(project, language) {
         pull(items) %>%
         map_df(`[[`, c("owner"))
     
-    result <- data.table(df,avatar = dt$avatar_url, user_type = dt$type )
+    result <- data.table(df,avatar = dt$avatar_url, user_type = dt$type, author = dt$login )
+    
+    result <- result %>%
+        rowwise() %>%
+        mutate(tags = get_repo_tags(author,repo_name)) %>% as_tibble() 
     
     return(result)
     

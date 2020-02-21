@@ -4,24 +4,37 @@
 
 # Version 2
 
+# Credits ----
+# https://unsplash.com/photos/842ofHC6MaI
+
+
 # Libraries ----
-library(tidyverse)
-library(jsonlite) # Required to convert between Json & R object
+
+library(devtools) # Collection of package development tools.
+
+# Authentication
 library(httpuv)  # Allows R code to listen for and interact with HTTP and WebSocket clients
 library(httr)  # Required for Oauth 2.0
+
+# Data Manipulation
 library(tidyverse) # Set of pkgs for data science: dplyr, ggplot2, purrr, tidyr, ...
+library(jsonlite) # Required to convert between Json & R object
+library(data.table)
+library(dplyr)
+library(purrr)
+
+# Shiny
 library(shiny) # Web Application Framework for R
 library(shinythemes) # Return the URL for a Shiny theme
-library(devtools) # Collection of package development tools.
 library(shinyjs) #Easily improve the user experience of your Shiny apps in seconds
 library(shinyWidgets) # Custom inputs widgets for Shiny.
 library(shiny) # Some advanced functionality depends on the shiny package being loaded server-side
 library(shinyjs)
-library(data.table)
-library(dplyr)
-library(purrr)
 library(waiter) # For Loadimng Screens
 library(shinycssloaders)
+library(sever)
+library(shinycustomloader) # For Loading bars 
+library(rintrojs)
 
 source(file = "00_Scripts/git_functions.R")
 source(file = "00_Scripts/info_card.R")
@@ -50,6 +63,11 @@ navbar_page_with_inputs <- function(...) {
 # UI -----
 ui <- fluidPage(
   
+  use_sever(),
+  use_waiter(include_js = FALSE), 
+  use_steward(),
+  use_waitress(),
+  waiter_show_on_load(spin_hexdots()),
   shinyjs::useShinyjs(),
   #includeCSS("www/loading-content.css"),
   
@@ -63,11 +81,34 @@ ui <- fluidPage(
   
   #div(id = "loading-content", "Hard = Those that create something you'd be proud of...",
   #   img(src = "ajax-loader-bar.gif")),
-  
+  # JUMBOTRON COMPONENT ----
+  div(
+    class = "container-fluid",
+    style = "padding:0;",
+    id = "jumbotron",
+    #column( # structure
+      #width = 12,
+      div( # component
+        class = "jumbotron",
+        style = "background-image:url('github.jpg'); background-size: cover;margin-bottom:0;",
+        div(
+          class = "jumbotron-ui-box text-default bg-primary bg-default",
+          style = "color:white; background-color:rgba(0,0,0,0.5); padding:25px;",
+          
+          # User Inputs Go here
+          h1("GitDiscoverer", style = "color: white;"),
+          br(),
+          a(href = "#", class = "btn btn-primary", "Learn More")
+          
+        )
+      )
+    #)
+    ),
   
   
   # The main app code goes here
   hidden(
+      
     div(
       
       id = "app-content",
@@ -108,7 +149,7 @@ ui <- fluidPage(
         # PANEL START: Trending Repositories ----
         tabPanel(
           title = "Trending Repositories",
-          
+        
           # CSS ----
           #shinythemes::themeSelector(),
           tags$head(
@@ -153,7 +194,7 @@ ui <- fluidPage(
           #         )
           #     )
           # ),
-
+          
           
           # Application UI ----
           div(
@@ -178,7 +219,8 @@ ui <- fluidPage(
                 div(
                   id = "input_settings",
                   hr(), 
-                  radioButtonsSort(inputId = 'var'),
+                  style = "width:max-content;",
+                  radioButtonsSort(inputId = 'var', choices =  c("trend","stars","forks"), selected = "trend"),
                 ) %>% hidden()
               )
             ),
@@ -239,7 +281,7 @@ ui <- fluidPage(
         
         # PANEL START:Trending Projects ----
         tabPanel(
-          title = "Trending Projects",
+          title = "Popular Projects",
           # CSS ----
           #shinythemes::themeSelector(),
           tags$head(
@@ -278,7 +320,8 @@ ui <- fluidPage(
                 div(
                   id = "input_settings_pro",
                   hr(), 
-                  radioButtonsSort(inputId = 'var1')
+                  style = "width:max-content;",
+                  radioButtonsSort(inputId = 'var1', choices =  c("stars","forks"), selected = "stars")
                 ) %>% hidden()
               )
             ),
@@ -301,8 +344,11 @@ server <- function(input, output, session) {
   
   # Simulate work being done for 1 second
   #show("loading-content") # make the loading pane appear
-  
-  #Sys.sleep(2)
+  sever()
+  Sys.sleep(2) #  something that takes time
+
+  waiter_hide()
+
   
   show("app-content")
   
@@ -322,14 +368,22 @@ server <- function(input, output, session) {
   }, ignoreNULL = FALSE)
   
   # Trending Repos ---- 
+  
+  # Trending Repos ---- 
   trending_repos <- reactive({
     
     tr <- trending_repos_on_github(language = language(), since = trend_freq(),gtoken = gtoken)
     # Sorting based on selection stars/forks
-    tr <- tr[order(unlist(tr %>% pull(input$var)), decreasing = TRUE),]
+    if(input$var == "stars" | input$var == "forks") {
+      tr <- tr[order(unlist(tr %>% pull(input$var)), decreasing = TRUE),]
+    } else{
+      tr <- trending_repos_on_github(language = language(), since = trend_freq(),gtoken = gtoken)
+    }
+    
     tr <- tibble::rowid_to_column(tr, "id")
     
   })
+  
   
   # Language Selection Developers ----
   language_dev <- eventReactive(input$get_trending_dev,{
@@ -368,7 +422,9 @@ server <- function(input, output, session) {
   trending_projects <- reactive({
     tr <- trending_projects_on_github(project = project(), language = language_project())
     # Sorting based on selection stars/forks
-    tr <- tr[order(unlist(tr %>% pull(input$var1)), decreasing = TRUE),]
+    if(input$var1 == "stars" | input$var1 == "forks") {
+      tr <- tr[order(unlist(tr %>% pull(input$var1)), decreasing = TRUE),]
+    } 
     tr <- tibble::rowid_to_column(tr, "id")
     
   })
@@ -464,11 +520,13 @@ server <- function(input, output, session) {
   #     
   # }
   
-  
+
   
   # Render Trending Repositories Cards ----
   output$output_cards <- renderUI({
+
     
+
     div(
       class = "container",
       div(
@@ -479,7 +537,7 @@ server <- function(input, output, session) {
     )
     
   })
-  
+
   
   # Render Trending Developers Cards ----
   output$output_dev_cards <- renderUI({

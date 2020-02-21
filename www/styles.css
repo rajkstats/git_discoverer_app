@@ -1,5 +1,6 @@
 
 /* PANELS */
 .panel {
-  padding : 0px;
+  padding : 10px;
+  box-shadow: 0 7px 15px rgba(0,0,0,0.1);
 }

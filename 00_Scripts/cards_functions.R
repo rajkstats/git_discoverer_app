@@ -13,7 +13,6 @@ make_tags <- function(data) {
 }
 
 
-nrow(trending_repos$tags[[16]])
 # Make Repository Cards ----
 make_cards <- function(data) {
     data %>%
@@ -186,6 +185,12 @@ make_project_cards <- function(data) {
                     #      class = "panel-heading",
                     #      span(class = "label label-info", "AWS")
                     # ),
+                    #For Adding tags on cards ----
+                    if(nrow(data %>% pluck("tags",1))!=0) {
+                      div(
+                        class = "panel-heading",
+                        data %>% pluck("tags",1) %>% make_tags()     
+                      )},
                     div(
                         class = "panel-body",
                         style = "padding:20px; word-break:break-all;",

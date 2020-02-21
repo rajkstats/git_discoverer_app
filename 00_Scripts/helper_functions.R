@@ -25,6 +25,6 @@ actionButtonSettings <- function(inputId) {
     actionButton(inputId, label = NULL, icon = icon("cog"))
 }
 
-radioButtonsSort <- function(inputId) {
-    radioGroupButtons(inputId, label = 'Sort By',choices = c(Stars='stars',Forks='forks'),selected = 'stars')
+radioButtonsSort <- function(inputId, choices, selected) {
+    radioGroupButtons(inputId, label = 'Sort By',choices = choices, selected = selected )
 }
