@@ -6,7 +6,7 @@ make_tags <- function(data) {
     group_split() %>%
     
     map(.f = function(data){
-      span(class = str_glue("label label-success"), data$tag)
+      span(class = str_glue("label label-success"), data$tag, style="min-height: 10; max-height: 10;overflow-y: scroll;")
     }) %>%
     
     tagList()
@@ -30,9 +30,6 @@ make_cards <- function(data) {
                     class = "panel panel-default",
                     style = "width:100%;",
                     
-                    #actionButton(inputId = "bookmark", label = "BookMark", icon = icon(class = "pull-right" , "bookmark")),
-      
-                    #actionButton(inputId = "bookmark",label = "Book mark",icon = icon("bookmark")),
           
                     #For Adding tags on cards ----
                     if(nrow(data %>% pluck("tags",1))!=0) {
@@ -46,8 +43,8 @@ make_cards <- function(data) {
                         
                         # image
                         tags$img(
-                            class = "img-fluid img-thumbnail",
-                            style = "width:100%;height:auto;border:none;",
+                          class = "img-fluid img-thumbnail img-size",
+                          style = "width:100%;height:auto;border:none;",
                             src   = data$avatar
                         ),
                         
@@ -56,7 +53,12 @@ make_cards <- function(data) {
                             data$name,
                             style = "font-size: 18px; font-weight: bold; text-overflow:ellipsis; color: currentColor;"
                         ),
-                        p(data$description),
+                        div(
+                        class = "crop",
+                        style = "display: block; display: -webkit-box;max-width: 200px; -webkit-line-clamp: 4; -webkit-box-orient: vertical;overflow: hidden;text-overflow: ellipsis; font-family: monospace;",
+                        p(data$description)
+                        ),
+                        br(),
                         a(
                             type   = "button",
                             class  = "btn btn-primary",
@@ -101,17 +103,13 @@ make_dev_cards <- function(data) {
                 div(
                     class = "panel panel-default",
                     style = "width:100%;",
-                    #  div(
-                    #      class = "panel-heading",
-                    #      span(class = "label label-info", "AWS")
-                    # ),
                     div(
                         class = "panel-body",
                         style = "padding:20px; word-break:break-all;",
                         
                         # image
                         tags$img(
-                            class = "img-fluid img-thumbnail",
+                            class = "img-fluid img-thumbnail img-size",
                             style = "width:100%;height:auto;border:none;",
                             src   = data$avatar
                         ),
@@ -137,25 +135,12 @@ make_dev_cards <- function(data) {
                             style = "font-size: 18px; font-weight: bold; text-overflow:ellipsis;"
                         ),
                         # Repo Description
-                        p(data$repo_desc),
-                        # a(
-                        #     type   = "button",
-                        #     class  = "btn btn-primary",
-                        #     target = "_blank",
-                        #     href   = data$url,
-                        #     "View Repo"
-                        # ),
-                        # # Github Stars
-                        # div(
-                        #     class = "btn btn-default btn-sm pull-right",
-                        #     span(class = "glyphicon glyphicon-star", data$stars)
-                        # ),
-                        # # Github Forks
-                        # div(
-                        #     class = "btn btn-default  btn-sm pull-right",
-                        #     span(class = "fas fa-code-branch", data$forks)
-                        # ),
-                        # 
+                        div(
+                          class = "crop",
+                          style = "display: block; display: -webkit-box;max-width: 200px; -webkit-line-clamp: 4; -webkit-box-orient: vertical;overflow: hidden;text-overflow: ellipsis; font-family: monospace;",
+                          p(data$repo_desc)
+                        ),
+
                     ),
                     
                 )
@@ -197,8 +182,8 @@ make_project_cards <- function(data) {
                         
                         # image
                         tags$img(
-                            class = "img-fluid img-thumbnail",
-                            style = "width:100%;height:auto;border:none;",
+                          class = "img-fluid img-thumbnail img-size",
+                          style = "width:100%;height:auto;border:none;",
                             src   = data$avatar
                         ),
                         
@@ -210,7 +195,12 @@ make_project_cards <- function(data) {
                             ),
     
                         # Repo Description
-                        p(data$repo_desc),
+                        div(
+                          class = "crop",
+                          style = "display: block; display: -webkit-box;max-width: 200px; -webkit-line-clamp: 4; -webkit-box-orient: vertical;overflow: hidden;text-overflow: ellipsis; font-family: monospace;",
+                          p(data$repo_desc)
+                        ),
+                        br(),
                         a(
                             type   = "button",
                             class  = "btn btn-primary",

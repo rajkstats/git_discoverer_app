@@ -76,14 +76,14 @@ trending_developers_on_github <- function(language,since,gtoken){
 
 # Trending ML/DL Projects -----
 #https://api.github.com/search/repositories?q=deep-learning OR CNN OR RNN OR "convolutional neural network" OR "recurrent neural network"&sort=stars&order=desc
-#https://api.github.com/search/repositories?q=machine-learning OR "ml" OR "machine learning"+lnaguage:R&sort=stars&order=desc
+#https://api.github.com/search/repositories?q=machine-learning OR "ml" OR "machine learning"+language:R&sort=stars&order=desc
 
 trending_projects_on_github <- function(project, language) {
     
     if(project == "dl") {
         search_q <- 'deep-learning OR CNN OR RNN OR "convolutional neural network" OR "recurrent neural network"'
     } else if(project == "ml") {
-        search_q <- 'machine-learning OR ml OR machine learning'
+        search_q <- 'machine-learning OR machine learning OR machinelearning'
     } 
     
     filter <- '&sort=stars&order=desc'
@@ -133,109 +133,6 @@ trending_projects_on_github <- function(project, language) {
     
 }
 
-# Popular projects (Open Source) ----
-# Open source organizations (Public Repositories)
-# https://api.github.com/orgs/rstudio/repos?page=2?access_token=c676a5f24dbeb04a86d13fe25ded3d5379a973fb
-# https://api.github.com/orgs/rstudio/repos?page=1&per_page=100
-# Function Usgae: google_repos <-  get_top_org_repo("google")
-
-
-# Show top 10 projects 
-get_top_org_repo <-  function(org, access_token){
-    
-    page_no <- 1
-    per_page <- 100
-    base_url <- "https://api.github.com/orgs/"
-    
-    url <- str_glue(base_url,org,"/repos", "?page=",page_no,"&per_page=", per_page)
-    req <- GET(url, gtoken)
-    json <- content(req)
-    
-    # Total Repos Fetched in first request
-    repos_fetched <- length(json)
-    #print(repos_fetched)
-    
-    repos <-  jsonlite::fromJSON(jsonlite::toJSON(json)) %>% as_tibble()
-    repos$avatar_url <- repos$owner$avatar_url
-    repos <- repos %>% select(name, html_url, stargazers_count, forks_count, language,avatar_url) %>% as_tibble()
-    
-    test  <- list()
-    
-    # If page results are 100 then that means there are more repos, so we will go through each page until pages on repo are less than 100
-    while(repos_fetched == 100) {
-        page_no <- page_no + 1
-        m_url = str_glue(base_url,org,"/repos?page=",page_no,"&per_page=", per_page)
-        req <- GET(m_url, gtoken)
-        json <- content(req)
-        repos_fetched <- length(json)
-        repo <-  jsonlite::fromJSON(jsonlite::toJSON(json)) %>% as_tibble()
-        repo$avatar_url <- repo$owner$avatar_url
-        test[[page_no-1]] <- repo %>% select(name,  html_url, stargazers_count, forks_count,language, avatar_url) %>% as_tibble()
-        
-    } 
-    
-    repos_page_wise <- reduce(test, bind_rows)
-    org_repos <- rbind(repos,repos_page_wise)
-    colnames(org_repos) <- c("name", "repo_url", "stars", "forks","language","avatar_url")
-    
-    pop_org_repos <- org_repos[order(unlist(org_repos %>% pull(stars)), decreasing = TRUE),]
-    top_repos <- pop_org_repos[1:10,]
-    
-    
-    return(top_repos)
-    
-}
 
 
 
-# Developer Stats ----
-
-# Comments , Commits, Stars, Forks, Pull Requests, Opened, PR Merged, Total Gists
-# Language wise commits
-
-# Total Stars
-# Total Gists
-# Total Open Issues
-# Number of Repos
-# Average time to close Issue
-# Average time to Close Pull Requests
-
-developer_stats_on_github <-  function(dev_user) {
-    
-}
-
-# User Stats ----
-# https://towardsdatascience.com/github-user-insights-using-github-api-data-collection-and-analysis-5b7dca1ab214
-
-# Year Wise commits 
-# Month Wise commits (Current Year)
-# EveryDay commits (Current Month) 
-# Commits in Each Year
-# Repo wise Commits
-# Issue Status by Repository
-# Language Distribution across all repositories (language: You spend more time learning X language)
-
-user_stats_on_github <-  function() {
-    
-}
-
-# Github Project Success ----
-
-# Number: Open Issues
-# Number: Closed Issues
-# Number: Average Days to Close an Issue
-# Number: Open Pull Requests
-# Number: Average Days to Pull
-# Line Chart: Issues (Open / Closed) By Status and Date
-# Line Chart: Pull Request (Open/Closed) By Status and Date 
-# Pie Chart: Pull Request Review Author Association (Contributor, Owner, Collaborator, None) 
-# Line Chart: Daily PRs closed and merged
-
-# Total number of first-time vs. repeat contributors over time
-# Average comments per issue or commits per pull request, with the ability to segment by repo
-# Pull request additions or deletions across all repositories, with the ability to segment by contributor
-# Total number of pull requests that are actually merged into a given branch
-
-project_stats <-  function(repo) {
-    
-}

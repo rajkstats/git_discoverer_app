@@ -1,6 +1,13 @@
-
 /* PANELS */
 .panel {
   padding : 10px;
-  box-shadow: 0 7px 15px rgba(0,0,0,0.1);
+}
+
+body{background-color:aliceblue;}
+
+@media only screen and (max-width: 480px){
+    .img-size{
+        width:300px !important;
+        height:auto !important;
+    }
 }
