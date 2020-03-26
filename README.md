@@ -87,7 +87,9 @@ Tab 2 - **Popular Projects**
 * [Unsplash: Jumbotron Image](https://unsplash.com/photos/842ofHC6MaI)
 * [Shiny CheatSheet](https://shiny.rstudio.com/images/shiny-cheatsheet.pdf)  
 * This artcile helped me [Kdnuggets: Trending Top Deep Learning Repositories](https://www.kdnuggets.com/2019/02/trending-top-deep-learning-github-repositories.html) in building popular projects tab. 
-* [GifMaker for Gifs](https://gifmaker.me/)
+* [Mastering Shiny By Hadley Wickham](https://mastering-shiny.org/)
+* For Loading screens - John-coene R [waiter package](https://waiter.john-coene.com/#/waitress)
+* Shiny disconnected screen using John Coene R [Sever package](https://github.com/JohnCoene/sever)
 
 ### Learn More 
 
