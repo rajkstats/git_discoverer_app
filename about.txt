@@ -3,8 +3,9 @@
 =================
 This project is re-work of [gitdiscoverer.com](https://rajkstats.shinyapps.io/rstudio-shiny-contest/) which is the first shiny web app I built as part of Rstudio Shiny Contest 2019. Idea of re-building this to try out skills I learned over past year. I have improved my front-end skills which I'm putting in to use here and added few features which might be useful for end users.
 
-### What's new in this version?
-================================
+### What's new?
+=================
+
 - Browse Popular Machine Learning and Deep Learning (ML/DL) Projects on Github
 - Topic Tags (Available in Trending Repositories, Popular Projects tabs)
 - Dynamically Rendering Info in Bootstrap cards component
@@ -59,19 +60,10 @@ There are few steps to try on the ticket,  but the one which worked for me on rs
 ===============
 &nbsp;
 
-**Loading Screen**
-
-# <p align="left">
-#   <img width="460" height="300" src="loading.gif">
-# </p>
-
-&nbsp;
-
-
 Tab 1 - **Trending Repositories**
 
 # <p align="left">
-#   <img width="460" height="300" src="tab1.gif">
+#   <img width="460" height="300" src="trending_repos.gif">
 # </p>
 
 &nbsp;
@@ -79,7 +71,7 @@ Tab 1 - **Trending Repositories**
 Tab 2 - **Trending Developers**
 
 # <p align="left">
-#   <img width="460" height="300" src="tab2.gif">
+#   <img width="460" height="300" src="trending_developers.gif">
 # </p>
 # 
 # &nbsp;
@@ -87,7 +79,7 @@ Tab 2 - **Trending Developers**
 Tab 2 - **Popular Projects**
 
 # <p align="left">
-#   <img width="460" height="300" src="tab3.gif">
+#   <img width="460" height="300" src="popular_projects.gif">
 # </p>
 # 
 
@@ -99,6 +91,7 @@ Tab 2 - **Popular Projects**
 * [Unsplash: Jumbotron Image](https://unsplash.com/photos/842ofHC6MaI)
 * [Shiny CheatSheet](https://shiny.rstudio.com/images/shiny-cheatsheet.pdf)  
 * This artcile helped me [Kdnuggets: Trending Top Deep Learning Repositories](https://www.kdnuggets.com/2019/02/trending-top-deep-learning-github-repositories.html) in building popular projects tab. 
+* [GifMaker for Gifs](https://gifmaker.me/)
 
 ### Learn More 
 ===============
@@ -107,10 +100,11 @@ Check out this [Linkedin Article]() I wrote.
 
 ### Contact
 ==========
-For any comments or questions, please email me at raj.k.stats@gmail.com
+- For any comments or questions, please email me at raj.k.stats@gmail.com
+- For Feature request/ improvements, Please open an issue [here](https://github.com/rajkstats/git_discoverer_app/issues)
 
 
-<a class="github-button" href="https://github.com/rajkstats/rstudio-shiny-contest" data-icon="octicon-cloud-download" data-size="large" aria-label="Download ntkme/github-buttons on GitHub">View Code On Github</a>
+<a class="github-button" href="https://github.com/rajkstats/git_discoverer_app" data-icon="octicon-cloud-download" data-size="large" aria-label="Download ntkme/github-buttons on GitHub">View Code On Github</a>
 
 
 <script async defer src="https://buttons.github.io/buttons.js"></script>

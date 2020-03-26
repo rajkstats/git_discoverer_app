@@ -1,13 +1,13 @@
 selectInputLang <- function(inputId, choices) {
     tags$div(
-        style = "color:aliceblue; font-family:sans-serif; font-size:15px;",
+        style = "color:aliceblue; font-family:sans-serif; font-size:15px;font-weight:bolder;",
         selectInput(inputId, label = "Language",  choices , multiple = FALSE, selected = "R")
     )
 }
 
 selectInputTrend <- function(inputId) {
     tags$div(
-        style = "color:aliceblue; font-family:sans-serif; font-size:15px;",
+        style = "color:aliceblue; font-family:sans-serif; font-size:15px;font-weight:bolder;",
         selectInput(inputId ,
                     label    = "Trending",
                     choices  = c("Daily", "Weekly", "Monthly"), 
@@ -19,7 +19,7 @@ selectInputTrend <- function(inputId) {
 
 selectInputProj <- function(inputId) {
     tags$div(
-        style = "color:aliceblue; font-family:sans-serif; font-size:15px;",
+        style = "color:aliceblue; font-family:sans-serif; font-size:15px;font-weight:bolder;",
         selectInput(
             inputId  = "project_selection",
             label    = "Project",

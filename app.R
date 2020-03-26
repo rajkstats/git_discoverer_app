@@ -56,6 +56,10 @@ ui <- fluidPage(
   
   shinyjs::useShinyjs(),
   
+  # Google Analytics
+  tags$head(includeHTML(("www/google-analytics.html"))),
+  
+  
   # 1.0.0 HEAD ----
   
   tagList(
@@ -78,10 +82,9 @@ ui <- fluidPage(
       div(
         class = "jumbotron-ui-box text-default bg-primary bg-default",
         style = "color:white; background-color:rgba(0,0,0,0.5); padding:25px;",
-        # User Inputs Go here
-        h1("GitDiscoverer", style = "color: white;"),
+        h1("GitDiscoverer",tags$small("for DS community", style = "color: white; font-size:50%;"), style = "color: white;"),
         br(),
-        a(href = "https://www.linkedin.com/post/edit/6646058848618708994/", class = "btn btn-primary", "View RShiny Contest Submission")
+        a(href = "https://www.linkedin.com/post/edit/6646058848618708994/", class = "btn btn-primary", "Write us a Review", style = "text-transform: inherit;")
       )
     )
   ),
@@ -97,6 +100,8 @@ ui <- fluidPage(
       
       # 2.1.0 Application Title ----
       title = div(
+        # adding share it buttons
+        tags$script(src= '//platform-api.sharethis.com/js/sharethis.js#property=5c80c0e64c495400114fe801&product=inline-share-buttons',async='async'),
         tags$h1("GitDiscoverer"),
         tags$style(HTML("
                         @import url('//fonts.googleapis.com/css?family=Titillium+Web:700');
