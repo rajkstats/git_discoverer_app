@@ -93,7 +93,7 @@ Tab 2 - **Popular Projects**
 
 ### Learn More 
 
-Check out this [Linkedin Article]() I wrote.
+Check out this [Linkedin Article](https://www.linkedin.com/pulse/rshiny-contest-2020-re-work-gitdiscoverercom-raj-kumar/) I wrote.
 
 ### Contact
 
